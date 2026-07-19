@@ -34,3 +34,6 @@ email-validator
 
 # Multipart (for file uploads)
 python-multipart
+
+fastapi[standard]
+uvicorn[standard]a
