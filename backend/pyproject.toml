@@ -18,3 +18,7 @@ dependencies = [
 
 [tool.fastapi]
 entrypoint = "main:app"
+
+
+[tool.setuptools]
+packages = ["app"]
