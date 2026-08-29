@@ -1,6 +1,33 @@
 These for SQLite Only
 
-//Can be use 
+-- CREATE TABLE system_settings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    company_name TEXT,
+    company_address TEXT,
+    phone TEXT,
+    email TEXT,
+    logo TEXT,
+
+    default_currency_id INTEGER,
+    default_warehouse_id INTEGER,
+    default_payment_type_id INTEGER,
+    allow_discount INTEGER NOT NULL DEFAULT 1,
+    tax_enabled INTEGER NOT NULL DEFAULT 0,
+    tax_rate REAL NOT NULL DEFAULT 0,
+    low_stock_warning INTEGER NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (default_currency_id)
+        REFERENCES currencies(id),
+
+    FOREIGN KEY (default_warehouse_id)
+        REFERENCES warehouses(id),
+
+    FOREIGN KEY (default_payment_type_id)
+        REFERENCES payment_types(id)
+);
 
 -- Categories Table
 CREATE TABLE categories (
@@ -11,7 +38,6 @@ CREATE TABLE categories (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
 
 -- Users Table
 CREATE TABLE users (
@@ -26,11 +52,25 @@ CREATE TABLE users (
     FOREIGN KEY (role_id) REFERENCES roles(id)
 );
 
+
+CREATE TABLE units (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    short_name VARCHAR(20) NOT NULL,
+    description TEXT,
+    status BOOLEAN DEFAULT TRUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- Products Table (Added SKU, min_qty, soft delete)
 CREATE TABLE products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     category_id INTEGER NOT NULL,
     supplier_id INTEGER NOT NULL,
+    unit_id INTEGER NOT NULL,
+    currency_id INTEGER NOT NULL,
     name TEXT NOT NULL,
     barcode TEXT UNIQUE,
     photo TEXT,
@@ -38,7 +78,6 @@ CREATE TABLE products (
     sale_price REAL NOT NULL,
     qty INTEGER DEFAULT 0,
     allow_insert_qty BOOLEAN 0,
-    unit TEXT,
     description TEXT,
     deleted_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -253,17 +292,6 @@ CREATE TABLE sale_payments (
 
     FOREIGN KEY (sale_id) REFERENCES sales(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
-CREATE TABLE units (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    short_name VARCHAR(20) NOT NULL,
-    description TEXT,
-    status BOOLEAN DEFAULT TRUE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE payment_types (
