@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import HTTPException
 from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
@@ -241,7 +241,7 @@ def update_product_transfer(session: Session, product_transfer_id: int, product_
 
         for field, value in data.items():
             setattr(db_transfer, field, value)
-        db_transfer.updated_at = product_transfer.updated_at or datetime.utcnow()
+        db_transfer.updated_at = product_transfer.updated_at or datetime.now(timezone.utc)
 
         if product_transfer.product_transfer_items is not None:
             db_transfer.product_transfer_items.clear()
